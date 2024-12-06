@@ -9,16 +9,28 @@ def print_board(board):
         print(' | '.join([' ' if cell == 0 else 'X' if cell == 1 else 'O' for cell in row]))
         print('-' * 9)
 
-print("Welcome to Tic Tac Toe!")
-print_board(board)
 def update_board(board, move, player):
-    x, y = map(int, move.split(','))
-    if board[x, y] == 0:
-        board[x, y] = player
-        return True
-    else:
-        print("Cell already taken! Try again.")
+    try:
+        # Ensure input is exactly 2 digits
+        if len(move) != 2 or not move.isdigit():
+            raise ValueError("Invalid input length.")
+        
+        # Convert input into row and column, subtracting 1 for 0-based indexing
+        x, y = int(move[0]) - 1, int(move[1]) - 1
+        
+        # Check if the move is valid
+        if x not in range(3) or y not in range(3):
+            raise ValueError("Input out of range.")
+        if board[x, y] == 0:
+            board[x, y] = player
+            return True
+        else:
+            print("Cell already taken! Try again.")
+            return False
+    except ValueError:
+        print("Invalid input! Enter your move as two digits (row and column, 1-3). Example: 12 for row 1, column 2.")
         return False
+
 def check_winner(board):
     for i in range(3):
         # Check rows and columns
@@ -38,10 +50,15 @@ def check_winner(board):
         return 0
     
     return -1
+
+# Game loop
+print("Welcome to Tic Tac Toe!")
+print_board(board)
+
 current_player = 1  # Player 1 starts
 while True:
     print(f"Player {current_player}'s turn.")
-    user_move = input("Enter your move as x,y coordinates (0-2): ")
+    user_move = input("Enter your move as two digits (row and column, 1-3). Example: 12: ")
     
     if update_board(board, user_move, current_player):
         print_board(board)
